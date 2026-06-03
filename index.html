@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+<style>
+body { font-family: Arial; padding:10px; background:#f5f5f5; }
+h2 { margin-bottom:10px; }
+select,input { width:100%; padding:10px; margin:5px 0; border-radius:5px; }
+.card { background:#fff; padding:10px; border-radius:10px; margin:8px 0; }
+.green { border-left:6px solid green; }
+.red { border-left:6px solid red; }
+</style>
+</head>
+<body>
+<h2>Drum Class Booking</h2>
+<input type='date' id='dateFilter'>
+<select id='locationFilter'>
+<option value=''>All Locations</option>
+<option>元朗</option>
+<option>荔枝角</option>
+<option>鑽石山</option>
+<option>All</option>
+</select>
+<select id='timeFilter'>
+<option value=''>All Time</option>
+</select>
+<div id='list'></div>
+<script>
+const data = [{'Date': '2026-07-02', 'Weekday': 'Thu', 'Time': '19:00–20:00', 'Availability': 'Booked', 'Location': '元朗'}, {'Date': '2026-07-02', 'Weekday': 'Thu', 'Time': '20:00–21:00', 'Availability': 'Available', 'Location': '元朗'}, {'Date': '2026-07-03', 'Weekday': 'Fri', 'Time': '14:00–15:00', 'Availability': 'Available', 'Location': '荔枝角'}, {'Date': '2026-07-03', 'Weekday': 'Fri', 'Time': '15:00–16:00', 'Availability': 'Booked', 'Location': '荔枝角'}, {'Date': '2026-07-04', 'Weekday': 'Sat', 'Time': '10:00–11:00', 'Availability': 'Available', 'Location': '鑽石山'}, {'Date': '2026-07-04', 'Weekday': 'Sat', 'Time': '11:00–12:00', 'Availability': 'Available', 'Location': '鑽石山'}];
+
+// populate unique times
+const timeSet = [...new Set(data.map(d=>d.Time))];
+const timeSel = document.getElementById('timeFilter');
+timeSet.sort().forEach(t=>{ let o=document.createElement('option');o.text=t;timeSel.add(o); });
+
+function render(){
+const dF=document.getElementById('dateFilter').value;
+const lF=document.getElementById('locationFilter').value;
+const tF=document.getElementById('timeFilter').value;
+const list=document.getElementById('list');
+list.innerHTML='';
+
+data.filter(r=>
+(!dF||r.Date==dF)&&(!lF||r.Location==lF||lF=='All')&&(!tF||r.Time==tF)
+).forEach(r=>{
+let div=document.createElement('div');
+div.className='card '+(r.Availability=='Available'?'green':'red');
+div.innerHTML=`<b>${r.Date}</b> (${r.Weekday})<br>${r.Time}<br>${r.Location}<br><b>${r.Availability}</b>`;
+list.appendChild(div);
+})
+}
+
+document.querySelectorAll('input,select').forEach(e=>e.addEventListener('change',render));
+render();
+</script>
+</body>
+</html>
