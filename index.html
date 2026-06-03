@@ -14,6 +14,16 @@ select,input { width:100%; padding:10px; margin:5px 0; border-radius:5px; }
 <body>
 <h2>Drum Class Booking</h2>
 <input type='date' id='dateFilter'>
+<select id='weekdayFilter'>
+<option value=''>All Weekdays</option>
+<option>Mon</option>
+<option>Tue</option>
+<option>Wed</option>
+<option>Thu</option>
+<option>Fri</option>
+<option>Sat</option>
+<option>Sun</option>
+</select>
 <select id='locationFilter'>
 <option value=''>All Locations</option>
 <option>元朗</option>
@@ -101,13 +111,14 @@ timeSet.sort().forEach(t=>{ let o=document.createElement('option');o.text=t;time
 
 function render(){
 const dF=document.getElementById('dateFilter').value;
+const wF=document.getElementById('weekdayFilter').value;
 const lF=document.getElementById('locationFilter').value;
 const tF=document.getElementById('timeFilter').value;
 const list=document.getElementById('list');
 list.innerHTML='';
 
 data.filter(r=>
-(!dF||r.Date==dF)&&(!lF||r.Location==lF||lF=='All')&&(!tF||r.Time==tF)
+(!dF||r.Date==dF)&&(!wF||r.Weekday==wF)&&(!lF||r.Location==lF||lF=='All')&&(!tF||r.Time==tF)
 ).forEach(r=>{
 let div=document.createElement('div');
 div.className='card '+(r.Availability=='Available'?'green':'red');
