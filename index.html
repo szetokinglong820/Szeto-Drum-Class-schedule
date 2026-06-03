@@ -26,7 +26,73 @@ select,input { width:100%; padding:10px; margin:5px 0; border-radius:5px; }
 </select>
 <div id='list'></div>
 <script>
-const data = [{'Date': '2026-07-02', 'Weekday': 'Thu', 'Time': '19:00–20:00', 'Availability': 'Booked', 'Location': '元朗'}, {'Date': '2026-07-02', 'Weekday': 'Thu', 'Time': '20:00–21:00', 'Availability': 'Available', 'Location': '元朗'}, {'Date': '2026-07-03', 'Weekday': 'Fri', 'Time': '14:00–15:00', 'Availability': 'Available', 'Location': '荔枝角'}, {'Date': '2026-07-03', 'Weekday': 'Fri', 'Time': '15:00–16:00', 'Availability': 'Booked', 'Location': '荔枝角'}, {'Date': '2026-07-04', 'Weekday': 'Sat', 'Time': '10:00–11:00', 'Availability': 'Available', 'Location': '鑽石山'}, {'Date': '2026-07-04', 'Weekday': 'Sat', 'Time': '11:00–12:00', 'Availability': 'Available', 'Location': '鑽石山'}];
+// Generate schedule for July and August 2026
+const data = [];
+
+function addScheduleEntry(date, weekday, time, availability, location) {
+  data.push({
+    'Date': date,
+    'Weekday': weekday,
+    'Time': time,
+    'Availability': availability,
+    'Location': location
+  });
+}
+
+function getWeekday(date) {
+  const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const d = new Date(date + 'T00:00:00Z');
+  return days[d.getUTCDay()];
+}
+
+// Generate dates for July and August 2026
+for (let month = 7; month <= 8; month++) {
+  const daysInMonth = month === 7 ? 31 : 31;
+  for (let day = 1; day <= daysInMonth; day++) {
+    const dateStr = `2026-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+    const weekday = getWeekday(dateStr);
+    
+    // Tuesday: 元朗, 19:00–20:00 (Available), 20:00–21:00 (Available)
+    if (weekday === 'Tue') {
+      addScheduleEntry(dateStr, 'Tue', '19:00–20:00', 'Available', '元朗');
+      addScheduleEntry(dateStr, 'Tue', '20:00–21:00', 'Available', '元朗');
+    }
+    
+    // Thursday: 元朗, 19:00–20:00 (Booked), 20:00–21:00 (Available)
+    if (weekday === 'Thu') {
+      addScheduleEntry(dateStr, 'Thu', '19:00–20:00', 'Booked', '元朗');
+      addScheduleEntry(dateStr, 'Thu', '20:00–21:00', 'Available', '元朗');
+    }
+    
+    // Friday: 荔枝角, 19:00–20:00 (Available), 20:00–21:00 (Available)
+    if (weekday === 'Fri') {
+      addScheduleEntry(dateStr, 'Fri', '19:00–20:00', 'Available', '荔枝角');
+      addScheduleEntry(dateStr, 'Fri', '20:00–21:00', 'Available', '荔枝角');
+    }
+    
+    // Saturday: 鑽石山 14:00-18:00 (Available, 1 hour intervals), 18:00-19:00 (Booked), 19:00-21:00 (Available at 荔枝角)
+    if (weekday === 'Sat') {
+      // 鑽石山 14:00-18:00 (Available)
+      addScheduleEntry(dateStr, 'Sat', '14:00–15:00', 'Available', '鑽石山');
+      addScheduleEntry(dateStr, 'Sat', '15:00–16:00', 'Available', '鑽石山');
+      addScheduleEntry(dateStr, 'Sat', '16:00–17:00', 'Available', '鑽石山');
+      addScheduleEntry(dateStr, 'Sat', '17:00–18:00', 'Available', '鑽石山');
+      // 18:00-19:00 (Booked)
+      addScheduleEntry(dateStr, 'Sat', '18:00–19:00', 'Booked', '鑽石山');
+      // 19:00-21:00 (Available at 荔枝角)
+      addScheduleEntry(dateStr, 'Sat', '19:00–20:00', 'Available', '荔枝角');
+      addScheduleEntry(dateStr, 'Sat', '20:00–21:00', 'Available', '荔枝角');
+    }
+    
+    // Sunday: 元朗, 14:00-18:00 (Available, 1 hour intervals)
+    if (weekday === 'Sun') {
+      addScheduleEntry(dateStr, 'Sun', '14:00–15:00', 'Available', '元朗');
+      addScheduleEntry(dateStr, 'Sun', '15:00–16:00', 'Available', '元朗');
+      addScheduleEntry(dateStr, 'Sun', '16:00–17:00', 'Available', '元朗');
+      addScheduleEntry(dateStr, 'Sun', '17:00–18:00', 'Available', '元朗');
+    }
+  }
+}
 
 // populate unique times
 const timeSet = [...new Set(data.map(d=>d.Time))];
